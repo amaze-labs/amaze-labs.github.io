@@ -1,5 +1,5 @@
 # Maze Labs
 
-Source of the Maze Labs website, served by GitHub Pages.
+Source of the Maze Labs website. The page is plain HTML, CSS and JS in `site/`, with no build step, and is published to GitHub Pages by `.github/workflows/pages.yml`.
 
-Work in progress.
+Preview locally with `python3 -m http.server -d site 8000`.

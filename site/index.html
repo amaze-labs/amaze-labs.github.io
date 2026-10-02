@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Maze Labs</title>
+<meta name="description" content="Self-hosted tools for homelabs and small networks: IP address management, DNS filtering, container registries, Argo CD on your phone and Intel AMT out-of-band access.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Maze Labs">
+<meta property="og:description" content="Self-hosted tools for homelabs, from two people who run one.">
+<meta property="og:url" content="https://amaze-labs.github.io/">
+<meta property="og:image" content="https://amaze-labs.github.io/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Martian+Mono:wdth,wght@87.5,400;87.5,500;87.5,700;87.5,800&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<span id="top"></span>
+<canvas id="bg" aria-hidden="true"></canvas>
+<div class="wrap">
+  <header class="top">
+    <a class="mark" href="#top">
+      <svg viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <rect x="2.5" y="2.5" width="21" height="21" rx="6"/><path d="M8.5 2.5v9h4.5 M17.5 8v9.5H13 M8.5 17v6"/>
+      </svg>
+      maze-labs
+    </a>
+    <nav class="nav">
+      <a href="#projects">projects</a>
+      <a href="https://github.com/amaze-labs">github</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div>
+      <h1>Tools for homelabs, <span>from two people who run one.</span></h1>
+      <p class="lede">We're two homelab enthusiasts. We kept finding software built for companies, or for a single box under the desk, and wanted tools that fit a homelab and leave us free to run things our way. So we started writing them.</p>
+      <div class="win term">
+        <div class="win-bar"><span class="path">~/<b>homelab</b></span><span class="path">zsh</span></div>
+        <div class="term-body">
+          <p class="prompt"><b>~/homelab</b> $ ls maze-labs/</p>
+          <ul class="ls" aria-label="Projects">
+            <li><a href="#ipmaze">ipmaze/</a><span class="st soon">● coming soon</span><span class="desc">ip address management</span></li>
+            <li><a href="#mazeamt">mazeamt/</a><span class="st soon">● coming soon</span><span class="desc">intel vpro, out of band</span></li>
+            <li><a href="#mazecd">mazecd/</a><span class="st soon">● coming soon</span><span class="desc">argo cd on your phone</span></li>
+            <li><a href="#mazedns">mazedns/</a><span class="st ok">● available</span><span class="desc">multi-site dns filtering</span></li>
+            <li><a href="#mazeregistryui">mazeregistryui/</a><span class="st ok">● available</span><span class="desc">container registry browser</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="map-col">
+    <div class="map">
+      <div class="map-bar"><span>route.trace</span><span id="hops">0 steps</span></div>
+      <canvas class="maze" id="maze" aria-label="A generated maze with a highlighted route from entrance to exit" role="img"></canvas>
+    </div>
+    </div>
+  </section>
+
+  <section id="projects">
+    <article class="win featured" id="ipmaze">
+      <div class="win-bar"><span class="path">~/maze-labs/<b>ipmaze</b></span><span class="status soon">● coming soon</span></div>
+      <div class="win-body">
+        <div class="col">
+          <div>
+            <p class="kicker">Flagship</p>
+            <h3>IPMaze</h3>
+          </div>
+          <p class="pitch">IP address management for homelabs and small networks. Sites, networks, Wi-Fi, hosts and the VPNs between them, documented in one place instead of a spreadsheet.</p>
+          <ul class="feat-list">
+            <li>Sites, networks, SSIDs, hosts, interfaces, VIPs, clusters and VPNs</li>
+            <li>Sites on a map, with a speedtest agent for bandwidth and public IP</li>
+            <li>REST API with interactive docs and tokens for your scripts</li>
+            <li>Local accounts with TOTP 2FA, or single sign-on via OIDC</li>
+            <li>Audit log and JSON export of the whole workspace</li>
+            <li>SQLite by default, PostgreSQL when you need it</li>
+          </ul>
+          <p class="cloud-note">// self-hosted. a managed cloud edition is planned.</p>
+        </div>
+        <div class="shot"><img width="1280" height="800" src="img/ipmaze.png" alt="IPMaze network view with an address map and host list" loading="lazy"></div>
+      </div>
+    </article>
+
+    <div class="sec-head">
+      <h2>projects</h2>
+      <p>2 available · 2 coming soon</p>
+    </div>
+
+    <div class="grid">
+      <article class="win card" id="mazedns">
+        <div class="win-bar"><span class="path">~/maze-labs/<b>mazedns</b></span><span class="status ok">● available</span></div>
+        <div class="win-body">
+          <div class="shot"><img width="1280" height="800" src="img/mazedns.png" alt="MazeDNS dashboard with query totals, cluster health and traffic over time" loading="lazy"></div>
+          <h3>MazeDNS</h3>
+          <p class="pitch">A filtering DNS resolver in the spirit of Pi-hole and AdGuard Home, built for more than one site.</p>
+          <ul class="points">
+            <li>One control plane for config and dashboard, DNS agents close to your clients</li>
+            <li>Agents enroll with a key and keep resolving if the control plane goes down</li>
+            <li>Blocklists, allow and deny rules, rewrites, local zones and split-horizon</li>
+            <li>DoH, DoT, DNSSEC, OIDC single sign-on and Prometheus metrics</li>
+          </ul>
+          <div class="links"><a class="btn primary" href="https://github.com/amaze-labs/MazeDNS#fast-deploy-docker-compose">get started</a><a class="btn" href="https://github.com/amaze-labs/MazeDNS">github</a></div>
+        </div>
+      </article>
+
+      <article class="win card" id="mazeregistryui">
+        <div class="win-bar"><span class="path">~/maze-labs/<b>mazeregistryui</b></span><span class="status ok">● available</span></div>
+        <div class="win-body">
+          <div class="shot"><img width="1280" height="800" src="img/mazeregistryui.png" alt="MazeRegistryUI image detail with layer composition" loading="lazy"></div>
+          <h3>MazeRegistryUI</h3>
+          <p class="pitch">A server-rendered web UI for your OCI and Docker registries, light enough for a phone.</p>
+          <ul class="points">
+            <li>Several registries behind one picker, each with its own credentials</li>
+            <li>Layer composition, multi-arch indexes, labels and the raw manifest</li>
+            <li>One binary and one config file: no Node, no CDN, runs air-gapped</li>
+            <li>Credentials stay on the server; the browser never talks to the registry</li>
+          </ul>
+          <div class="links"><a class="btn primary" href="https://github.com/amaze-labs/MazeRegistryUI#quickstart">get started</a><a class="btn" href="https://github.com/amaze-labs/MazeRegistryUI">github</a></div>
+        </div>
+      </article>
+
+      <article class="win card" id="mazecd">
+        <div class="win-bar"><span class="path">~/maze-labs/<b>mazecd</b></span><span class="status soon">● coming soon</span></div>
+        <div class="win-body">
+          <div class="shot"><img width="1280" height="800" src="img/mazecd.png" alt="MazeCD on three phones: application list, resource tree and diff from Git" loading="lazy"></div>
+          <h3>MazeCD</h3>
+          <p class="pitch">A mobile-first PWA that watches all your Argo CD instances from one screen.</p>
+          <ul class="points">
+            <li>Install it on your phone; it updates itself seconds after a new release</li>
+            <li>Every application from every instance, with resource tree, pod logs and git diff</li>
+            <li>The Argo CD token decides: read-only, or sync and resource actions too</li>
+            <li>One Go binary proxies to Argo CD, so tokens never reach your device</li>
+          </ul>
+          <div class="links"><span class="none">// source not public yet</span></div>
+        </div>
+      </article>
+
+      <article class="win card" id="mazeamt">
+        <div class="win-bar"><span class="path">~/maze-labs/<b>mazeamt</b></span><span class="status soon">● coming soon</span></div>
+        <div class="win-body">
+          <div class="shot"><img width="1280" height="800" src="img/mazeamt.png" alt="MazeAMT dashboard with a fleet of vPro machines" loading="lazy"></div>
+          <h3>MazeAMT</h3>
+          <p class="pitch">A web UI for out-of-band management of Intel AMT (vPro) PCs, remote desktop included.</p>
+          <ul class="points">
+            <li>KVM in the browser, through an RFB client written for the AMT firmware</li>
+            <li>Power control and one-time boot to PXE, disk, CD/DVD or BIOS setup</li>
+            <li>Hardware inventory and firmware event log, with no agent on the machines</li>
+            <li>Built for a fleet: one dashboard with power state, tags and search</li>
+          </ul>
+          <div class="links"><span class="none">// source not public yet</span></div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+
+  <article class="win ai" id="ai">
+    <div class="win-bar"><span class="path">~/maze-labs/<b>BUILT_WITH_AI.md</b></span><span class="status ai-status">● ai-assisted</span></div>
+    <div class="ai-body">
+      <div class="ai-intro">
+        <h3>We build with AI, and we say so.</h3>
+        <p>We are not software developers. We both work in IT and know what a homelab needs, and we write these tools together with AI coding assistants. We'd rather tell you upfront than have you find out from the commit history.</p>
+      </div>
+      <ul class="ai-points">
+        <li><span class="mono">we design</span>We decide what each tool does, how it behaves and what it deliberately leaves out.</li>
+        <li><span class="mono">we test</span>Every change runs in our own lab before it ships. If it breaks, we find out first.</li>
+        <li><span class="mono">you check</span>Published projects are open source, so you can read every line yourself.</li>
+      </ul>
+    </div>
+  </article>
+
+  <footer>
+    <span>© 2026 Maze Labs</span>
+    <a href="https://github.com/amaze-labs">github.com/amaze-labs</a>
+  </footer>
+</div>
+<script src="maze.js"></script>
+</body>
+</html>
