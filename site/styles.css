@@ -1,4 +1,4 @@
-/* Layout: header → hero (terminal + maze) → featured IPMaze → 2×2 projects → built with AI → footer */
+/* Layout: header → hero (terminal + maze) → featured IPMaze → team → 2×2 projects → built with AI → footer */
 :root {
   --bg: #0c1118;
   --panel: #111823;
@@ -141,13 +141,24 @@ h2::before { content: "## "; color: var(--accent); }
 .ai-body > * { min-width: 0; }
 .ai h3 { font-family: var(--f-mono); font-weight: 800; font-size: 26px; line-height: 1.15; letter-spacing: -0.04em; margin: 0 0 16px; text-wrap: balance; }
 .ai-intro p { margin: 0; font-size: 17px; color: var(--ink); max-width: 34em; }
-.ai-points { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; align-content: start; }
+.ai-points { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; align-content: center; }
 .ai-points li { display: grid; grid-template-columns: 7.5rem 1fr; gap: 16px; align-items: baseline; padding: 14px 18px; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--bg); font-size: 15.5px; }
 .ai-points .mono { font-size: 12px; color: var(--accent); }
 @media (max-width: 860px) {
   .ai-body { grid-template-columns: 1fr; padding: 22px; gap: 24px; }
   .ai-points li { grid-template-columns: 1fr; gap: 4px; }
 }
+
+/* team */
+.team { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 64px; }
+.member-body { display: flex; align-items: center; gap: 18px; padding: 20px; }
+.avatar { width: 72px; height: 72px; flex: none; border-radius: var(--r-md); border: 1px solid var(--line); background: var(--bg); }
+.who { flex: 1; min-width: 0; }
+.who h3 { font-family: var(--f-mono); font-weight: 700; font-size: 18px; letter-spacing: -0.03em; margin: 0 0 4px; }
+.who p { margin: 0; font-size: 12px; color: var(--muted); overflow-wrap: anywhere; }
+.member-links { display: flex; gap: 8px; flex: none; font-family: var(--f-mono); font-size: 12.5px; }
+@media (max-width: 860px) { .team { grid-template-columns: 1fr; } }
+@media (max-width: 520px) { .member-body { flex-wrap: wrap; } .member-links { width: 100%; } }
 
 footer { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding-top: 20px; border-top: 1px solid var(--line); font-family: var(--f-mono); font-size: 12px; color: var(--muted); }
 
