@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="IPMaze">
+  <rect width="32" height="32" rx="7" fill="#0c1118"/>
+  <g transform="translate(4 4) scale(0.923)" fill="none" stroke="#4d8dff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="2.5" y="2.5" width="21" height="21" rx="6"/>
+    <path d="M8.5 2.5v9h4.5 M17.5 8v9.5H13 M8.5 17v6"/>
+  </g>
+</svg>

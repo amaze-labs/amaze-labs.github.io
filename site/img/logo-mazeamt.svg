@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="MazeAMT">
+  <rect width="32" height="32" rx="7" fill="#0c1118"/>
+  <g transform="translate(4 4) scale(0.923)" fill="none" stroke="#22d3ee" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="2.5" y="2.5" width="21" height="21" rx="6"/>
+    <path d="M13 7v4.5 M10 8.5H8.5v9h9v-9H16"/>
+  </g>
+</svg>
