@@ -1,7 +1,8 @@
 name: pages
 
-# Manual only until Pages is enabled; switch to `push: branches: [main]` afterwards.
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
