@@ -170,6 +170,33 @@
   addEventListener('resize', drawAll);
   matchMedia('(prefers-color-scheme: light)').addEventListener('change', drawAll);
 
+  /* ---------- screenshots: click (or enter) to see one at full size ---------- */
+  const shots = document.querySelectorAll('.shot img');
+  let box = null;
+  function openShot(img) {
+    if (!box) {
+      box = document.createElement('dialog');
+      box.className = 'lightbox';
+      box.setAttribute('aria-label', 'Screenshot');
+      box.appendChild(document.createElement('img'));
+      box.addEventListener('click', () => box.close());  // anywhere closes it; Esc too, natively
+      document.body.appendChild(box);
+    }
+    const big = box.querySelector('img');
+    big.src = img.currentSrc || img.src;  // the theme's version, the one on screen
+    big.alt = img.alt;
+    box.showModal();
+  }
+  shots.forEach(img => {
+    img.tabIndex = 0;
+    img.setAttribute('role', 'button');
+    img.setAttribute('aria-label', 'Enlarge: ' + img.alt);
+    img.addEventListener('click', () => openShot(img));
+    img.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openShot(img); }
+    });
+  });
+
   /* ---------- theme toggle: flips the theme in use and remembers it ---------- */
   const toggle = document.querySelector('.theme-toggle');
   if (toggle) toggle.addEventListener('click', () => {
