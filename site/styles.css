@@ -66,7 +66,7 @@ a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-
 h1 { font-family: var(--f-mono); font-weight: 800; font-size: clamp(28px, 4.2vw, 48px); line-height: 1.08; letter-spacing: -0.04em; margin: -0.12em 0 24px; text-wrap: balance; }
 h1 span { color: var(--accent); }
 .lede { font-size: 18px; color: var(--muted); max-width: 33em; margin: 0 0 28px; }
-/* terminal window: `ls maze-labs/` and its output, one line per project linking to its window */
+/* terminal window: `ls amaze-labs/` and its output, one line per project linking to its window */
 .win.term:hover { transform: none; border-color: var(--line); }
 .term-body { padding: 16px 18px; display: grid; gap: 10px; font-family: var(--f-mono); font-size: 13px; }
 .term .prompt { margin: 0; font-size: 13px; }
