@@ -169,4 +169,15 @@
   }
   addEventListener('resize', drawAll);
   matchMedia('(prefers-color-scheme: light)').addEventListener('change', drawAll);
+
+  /* ---------- theme toggle: flips the theme in use and remembers it ---------- */
+  const toggle = document.querySelector('.theme-toggle');
+  if (toggle) toggle.addEventListener('click', () => {
+    const root = document.documentElement;
+    const now = root.dataset.theme || (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+    const next = now === 'light' ? 'dark' : 'light';
+    root.dataset.theme = next;
+    try { localStorage.setItem('theme', next); } catch (e) {}
+    drawAll();  // the mazes read their colours from the tokens
+  });
 })();
