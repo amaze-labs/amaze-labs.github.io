@@ -197,6 +197,109 @@
     });
   });
 
+  /* ---------- first screen: the hero fills what the header leaves of the viewport ---------- */
+  const topBar = document.querySelector('.top');
+  const fitHero = () => topBar && document.documentElement.style.setProperty('--top-h', topBar.offsetHeight + 'px');
+  fitHero();
+  addEventListener('resize', fitHero);
+
+  /* ---------- first screen: hide the scroll hint once the page moves ---------- */
+  const onScroll = () => document.documentElement.classList.toggle('scrolled', scrollY > 40);
+  addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  /* ---------- sections below the hero come in as they scroll into view ---------- */
+  if (!reduce && 'IntersectionObserver' in window) {
+    const items = document.querySelectorAll('#projects .sec-head, .tree, .row, #team .sec-head, .readme, footer');
+    const seen = new IntersectionObserver(entries => entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('in'); seen.unobserve(e.target); }
+    }), { rootMargin: '0px 0px -8% 0px' });
+    items.forEach(el => {
+      // anything already on screen (a reload halfway down, a #link) shows at once
+      if (el.getBoundingClientRect().top < innerHeight) return;
+      el.classList.add('reveal'); seen.observe(el);
+    });
+    document.documentElement.classList.add('reveal-on');
+  }
+
+  /* ---------- `amaze versions`: latest release of each repo, live from GitHub ---------- */
+  // Unauthenticated API: 60 requests per hour per IP, so answers are cached for 10 minutes.
+  // A private repo (or one with no release yet) answers 404 and keeps its "soon" row.
+  const versions = document.querySelector('.versions');
+  if (versions) (async () => {
+    const rows = [...versions.querySelectorAll('.vrow[data-repo]')];
+    const KEY = 'amaze-versions', TTL = 10 * 60 * 1000;
+    let data = null;
+    try { const c = JSON.parse(localStorage.getItem(KEY)); if (c && Date.now() - c.t < TTL) data = c.data; } catch (e) {}
+    if (!data) {
+      const got = await Promise.allSettled(rows.map(r =>
+        fetch('https://api.github.com/repos/amaze-labs/' + r.dataset.repo + '/releases/latest',
+              { headers: { Accept: 'application/vnd.github+json' } })
+          .then(res => res.ok ? res.json() : null)));
+      if (got.every(g => g.status === 'rejected')) return;  // offline or blocked: keep the static rows
+      data = {};
+      got.forEach((g, i) => {
+        const rel = g.status === 'fulfilled' && g.value;
+        if (rel && rel.tag_name) data[rows[i].dataset.repo] = { tag: rel.tag_name.replace(/^v/, ''), at: rel.published_at };
+      });
+      try { localStorage.setItem(KEY, JSON.stringify({ t: Date.now(), data })); } catch (e) {}
+    }
+    const rtf = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
+    const DAY = 864e5;
+    const ago = at => {
+      const days = Math.round((new Date(at).setHours(0, 0, 0, 0) - new Date().setHours(0, 0, 0, 0)) / DAY);
+      if (days > -14) return rtf.format(days, 'day');
+      if (days > -60) return rtf.format(Math.round(days / 7), 'week');
+      if (days > -730) return rtf.format(Math.round(days / 30), 'month');
+      return rtf.format(Math.round(days / 365), 'year');
+    };
+    let any = false;
+    rows.forEach(r => {
+      const rel = data[r.dataset.repo];
+      if (!rel) return;
+      any = true;
+      const ver = r.querySelector('.ver'), when = r.querySelector('.when');
+      ver.textContent = rel.tag;
+      ver.className = 'ver' + (Date.now() - new Date(rel.at) < 7 * DAY ? ' new' : '');
+      when.textContent = ago(rel.at);
+      when.title = new Date(rel.at).toLocaleString();
+      r.dataset.at = rel.at;
+    });
+    if (!any) return;
+    // newest release first; projects without a public release stay at the bottom, in page order
+    rows.sort((a, b) => (b.dataset.at || '').localeCompare(a.dataset.at || '')).forEach(r => versions.appendChild(r));
+    const live = document.querySelector('.term .live');
+    if (live) live.hidden = false;
+  })();
+
+  /* ---------- project tree: highlight the section being read ---------- */
+  const treeLinks = [...document.querySelectorAll('.tree-list a')];
+  const targets = treeLinks.map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
+  if (targets.length && 'IntersectionObserver' in window) {
+    const visible = new Set();
+    const mark = () => {
+      // the first section, in page order, that crosses the reading band
+      const cur = targets.find(t => visible.has(t));
+      if (!cur) return;
+      treeLinks.forEach(a => {
+        if (a.getAttribute('href') !== '#' + cur.id) { a.removeAttribute('aria-current'); return; }
+        if (a.hasAttribute('aria-current')) return;
+        a.setAttribute('aria-current', 'true');
+        // on narrow screens the tree is a strip of tabs: keep the current one in view
+        const list = a.closest('.tree-list');
+        if (list.scrollWidth > list.clientWidth) {
+          list.scrollTo({ left: a.parentElement.offsetLeft - list.offsetLeft - 8, behavior: reduce ? 'auto' : 'smooth' });
+        }
+      });
+    };
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => e.isIntersecting ? visible.add(e.target) : visible.delete(e.target));
+      mark();
+    }, { rootMargin: '-35% 0px -55% 0px' });
+    targets.forEach(t => io.observe(t));
+    treeLinks[0].setAttribute('aria-current', 'true');
+  }
+
   /* ---------- theme toggle: flips the theme in use and remembers it ---------- */
   const toggle = document.querySelector('.theme-toggle');
   if (toggle) toggle.addEventListener('click', () => {
