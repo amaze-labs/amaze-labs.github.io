@@ -154,8 +154,86 @@
     strokeWalls(ctx, carve(W, H, 97), W, H, s, -s / 2, -s / 2);
   }
 
-  function drawAll() { drawBg(); setupHero(); drawHero(); }
+  /* ---------- footer: a maze strip, the route enters on the left and leaves on the right ---------- */
+  const exitCv = document.querySelector('.exit-maze');
+  const EXIT_S = 28, EXIT_H = 3;  // cell size and rows; the column count follows the width
+  let exit = null, exitHead = 0;
+  function setupExit() {
+    if (!exitCv || !exitCv.clientWidth) return;
+    const dpr = window.devicePixelRatio || 1, w = exitCv.clientWidth, h = exitCv.clientHeight;
+    const W = Math.floor((w - 56) / EXIT_S), s = EXIT_S;  // keep room on both sides for the dot and its halo
+    const ox = (w - W * s) / 2, oy = (h - EXIT_H * s) / 2;
+    if (!exit || exit.W !== W) {
+      // the seed whose route wanders about one and a half times the width: more than a straight line, still readable
+      const start = W, end = 2 * W - 1, target = Math.round(W * 1.5);
+      let best = null;
+      for (let seed = 1; seed <= 120; seed++) {
+        const wl = carve(W, EXIT_H, seed);
+        const { dist, prev } = bfs(wl, W, EXIT_H, start);
+        const off = Math.abs(dist[end] - target);
+        if (!best || off < best.off) best = { wl, prev, off };
+      }
+      best.wl[start][3] = false; best.wl[end][1] = false;  // the way in and the way out
+      const cells = [];
+      for (let c = end; c !== -1; c = best.prev[c]) cells.unshift(c);
+      exit = { W, walls: best.wl, cells };
+    }
+    const cx = c => ox + (c % W) * s + s / 2, cy = c => oy + ((c / W) | 0) * s + s / 2;
+    const c = exit.cells;
+    exit.pts = [[ox - 14, cy(c[0])], ...c.map(i => [cx(i), cy(i)]), [ox + W * s + 14, cy(c[c.length - 1])]];
+    exit.last = exit.pts.length - 1;
+    exit.w = w; exit.h = h; exit.s = s;
+    exitCv.width = w * dpr; exitCv.height = h * dpr;
+    exit.ctx = exitCv.getContext('2d');
+    exit.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    exit.ox = ox; exit.oy = oy;
+    if (exitHead > exit.last) exitHead = exit.last;
+  }
+  function drawExit() {
+    if (!exit || !exit.ctx) return;
+    const { ctx: g, w, h, s, pts, last } = exit, k = css();
+    const accent = k.getPropertyValue('--accent').trim();
+    g.clearRect(0, 0, w, h);
+    g.strokeStyle = k.getPropertyValue('--muted').trim(); g.globalAlpha = 0.5; g.lineWidth = 1.5; g.lineCap = 'round';
+    strokeWalls(g, exit.walls, exit.W, EXIT_H, s, exit.ox, exit.oy);
+    const i = Math.min(last - 1, Math.floor(exitHead)), t = exitHead - i;
+    const head = [pts[i][0] + (pts[i + 1][0] - pts[i][0]) * t, pts[i][1] + (pts[i + 1][1] - pts[i][1]) * t];
+    const route = width => {
+      g.lineWidth = width; g.lineJoin = 'round';
+      g.beginPath(); g.moveTo(...pts[0]);
+      for (let j = 1; j <= i; j++) g.lineTo(...pts[j]);
+      g.lineTo(...head); g.stroke();
+    };
+    g.strokeStyle = accent;
+    g.globalAlpha = 0.18; route(9);
+    g.globalAlpha = 1; route(3);
+    g.fillStyle = accent;
+    g.beginPath(); g.arc(...head, 5.5, 0, Math.PI * 2); g.fill();
+    g.globalAlpha = 0.18; g.beginPath(); g.arc(...head, 12, 0, Math.PI * 2); g.fill();
+    g.globalAlpha = 1;
+  }
+
+  function drawAll() { drawBg(); setupHero(); drawHero(); setupExit(); drawExit(); }
   drawAll();
+  // the route walks through the strip once, the first time the footer comes into view
+  if (exitCv) {
+    if (reduce || !('IntersectionObserver' in window)) { exitHead = exit ? exit.last : 0; drawExit(); }
+    else {
+      const io = new IntersectionObserver(entries => {
+        if (!entries[0].isIntersecting) return;
+        io.disconnect();
+        const EXIT_SPEED = 30;  // cells per second
+        let prevT = performance.now();
+        (function walk(t) {
+          const dt = Math.min(0.05, (t - prevT) / 1000); prevT = t;
+          exitHead = Math.min(exit.last, exitHead + EXIT_SPEED * dt);
+          drawExit();
+          if (exitHead < exit.last) requestAnimationFrame(walk);
+        })(prevT);
+      }, { threshold: 0.6 });
+      io.observe(exitCv);
+    }
+  }
   if (!reduce) {
     const SPEED = 24;  // cells per second, constant: no easing
     let prev = performance.now();
@@ -222,7 +300,7 @@
 
   /* ---------- sections below the hero come in as they scroll into view ---------- */
   if (!reduce && 'IntersectionObserver' in window) {
-    const items = document.querySelectorAll('#projects .sec-head, .tree, .row, #team .sec-head, .readme, footer');
+    const items = document.querySelectorAll('#projects .sec-head, .tree, .row, #team .sec-head, .readme');
     const seen = new IntersectionObserver(entries => entries.forEach(e => {
       if (e.isIntersecting) { e.target.classList.add('in'); seen.unobserve(e.target); }
     }), { rootMargin: '0px 0px -8% 0px' });
