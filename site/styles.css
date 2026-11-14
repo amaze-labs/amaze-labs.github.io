@@ -149,7 +149,7 @@ h2::before { content: "## "; color: var(--accent); }
 @keyframes lightbox-in { from { opacity: 0; transform: scale(0.97); } }
 @media (prefers-reduced-motion: reduce) { .lightbox[open] { animation: none; } }
 /* projects: a sticky file tree on the left, one row per project on the right */
-#projects { margin-bottom: 72px; --head-h: 62px; }
+#projects { margin-bottom: 72px; --head-h: 62px; }  /* maze.js replaces it with the title's real height */
 /* the section title stays on screen while the projects scroll under it */
 #projects > .sec-head { position: sticky; top: 0; z-index: 3; margin: 0; padding-block: 16px 14px; background: linear-gradient(var(--bg) 82%, transparent); }
 .split { display: grid; grid-template-columns: 210px 1fr; gap: 40px; align-items: start; }
@@ -258,7 +258,10 @@ footer { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wr
 @media (max-width: 960px) {
   .split { grid-template-columns: 1fr; gap: 24px; }
   /* the tree becomes a sticky strip of tabs above the rows */
-  .tree { top: var(--head-h); z-index: 2; border-radius: var(--r-md); }
+  /* the tabs sit flush under the title, so its fade would let the rows show through: solid instead */
+  #projects > .sec-head { background: var(--bg); }
+  /* a solid ring as wide as the radius fills the rounded corners, which would otherwise show the rows */
+  .tree { top: var(--head-h); z-index: 2; border-radius: var(--r-md); box-shadow: 0 0 0 var(--r-md) var(--bg); }
   .tree-bar, .tree-legend { display: none; }
   .tree-list { display: flex; gap: 4px; overflow-x: auto; padding: 6px; scrollbar-width: none; }
   .tree-list li { flex: none; }

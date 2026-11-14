@@ -203,6 +203,18 @@
   fitHero();
   addEventListener('resize', fitHero);
 
+  /* ---------- projects: the sticky tree sits right under the sticky title, whatever its height ---------- */
+  // on a phone the title and the count wrap onto two lines, so the CSS default is too short
+  const projects = document.getElementById('projects');
+  const projHead = projects && projects.querySelector(':scope > .sec-head');
+  if (projHead) {
+    // the exact height, fractions included: offsetHeight rounds and leaves a sliver of the rows showing between the two
+    const fitHead = () => projects.style.setProperty('--head-h', projHead.getBoundingClientRect().height + 'px');
+    fitHead();
+    if ('ResizeObserver' in window) new ResizeObserver(fitHead).observe(projHead);
+    else addEventListener('resize', fitHead);
+  }
+
   /* ---------- first screen: hide the scroll hint once the page moves ---------- */
   const onScroll = () => document.documentElement.classList.toggle('scrolled', scrollY > 40);
   addEventListener('scroll', onScroll, { passive: true });
